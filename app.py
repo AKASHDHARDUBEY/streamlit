@@ -1,5 +1,5 @@
 """
-🌳 Decision Tree Interactive Visualizer
+ Decision Tree Interactive Visualizer
 ========================================
 An interactive Streamlit app to explore how Decision Trees
 partition data, choose splits, grow, and make predictions.
@@ -19,15 +19,15 @@ import graphviz
 import warnings
 warnings.filterwarnings("ignore")
 
-# ─── Page Config ───────────────────────────────────────────────────────
+#  Page Config 
 st.set_page_config(
-    page_title="🌳 Decision Tree Visualizer",
-    page_icon="🌳",
+    page_title=" Decision Tree Visualizer",
+    page_icon="",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# ─── Custom CSS for premium look ──────────────────────────────────────
+#  Custom CSS for premium look 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -134,7 +134,7 @@ div[data-testid="stSidebar"] span {
 </style>
 """, unsafe_allow_html=True)
 
-# ─── Helper Functions ──────────────────────────────────────────────────
+#  Helper Functions 
 
 def generate_dataset(name, n_samples=300, noise_level=0.0, random_state=42):
     """Generate 2D classification datasets."""
@@ -241,7 +241,7 @@ def plot_decision_boundary(clf, X, y, ax, title="", alpha=0.35, show_regions=Tru
     n_classes = len(classes)
     bold_colors = _REGION_COLORS[:n_classes]
 
-    # ── mesh ──────────────────────────────────────────────────────────
+    #  mesh 
     pad = 0.45
     x_min, x_max = X[:, 0].min() - pad, X[:, 0].max() + pad
     y_min, y_max = X[:, 1].min() - pad, X[:, 1].max() + pad
@@ -255,7 +255,7 @@ def plot_decision_boundary(clf, X, y, ax, title="", alpha=0.35, show_regions=Tru
 
     if show_regions:
         if show_confidence and hasattr(clf, 'predict_proba'):
-            # ── confidence shading ────────────────────────────────────
+            #  confidence shading 
             # For each class, build a custom white→class colormap and
             # paint max-confidence pixels with the class colour.
             proba = clf.predict_proba(grid_points)
@@ -283,7 +283,7 @@ def plot_decision_boundary(clf, X, y, ax, title="", alpha=0.35, show_regions=Tru
             ax.contourf(xx, yy, Z_cls, alpha=alpha, cmap=flat_cmap, zorder=1)
 
         if show_boundary_line:
-            # ── crisp boundary outline with subtle glow ────────────────
+            #  crisp boundary outline with subtle glow 
             ax.contour(xx, yy, Z_cls, levels=n_classes - 1,
                        colors='white', linewidths=3.5, alpha=0.6, zorder=3)
             ax.contour(xx, yy, Z_cls, levels=n_classes - 1,
@@ -291,7 +291,7 @@ def plot_decision_boundary(clf, X, y, ax, title="", alpha=0.35, show_regions=Tru
                        linestyles='solid')
 
         if show_region_labels:
-            # ── label each region near its centroid ────────────────────
+            #  label each region near its centroid 
             from scipy import ndimage as ndi
             for ci, cls_idx in enumerate(clf.classes_):
                 mask = (Z_cls == cls_idx)
@@ -310,7 +310,7 @@ def plot_decision_boundary(clf, X, y, ax, title="", alpha=0.35, show_regions=Tru
                                           foreground=label_color)
                         ])
 
-    # ── data points ──────────────────────────────────────────────────
+    #  data points 
     cmap_bold = ListedColormap(bold_colors)
     scatter = ax.scatter(X[:, 0], X[:, 1],
                          c=y, cmap=cmap_bold,
@@ -318,7 +318,7 @@ def plot_decision_boundary(clf, X, y, ax, title="", alpha=0.35, show_regions=Tru
                          linewidths=0.9, alpha=0.92, zorder=7)
 
     if show_centroids:
-        # ── crosshair centroids ───────────────────────────────────────
+        #  crosshair centroids 
         for ci, cls_idx in enumerate(classes):
             mask_pts = y == cls_idx
             cx, cy_val = X[mask_pts, 0].mean(), X[mask_pts, 1].mean()
@@ -328,7 +328,7 @@ def plot_decision_boundary(clf, X, y, ax, title="", alpha=0.35, show_regions=Tru
             ax.scatter(cx, cy_val, marker='+', s=90,  color=col,
                        linewidths=2, zorder=10)
 
-    # ── axes styling ─────────────────────────────────────────────────
+    #  axes styling 
     ax.set_xlim(x_min, x_max)
     ax.set_ylim(y_min, y_max)
     ax.set_xlabel("Feature 1", fontsize=10, fontweight=500)
@@ -390,13 +390,13 @@ def get_prediction_path(clf, point):
     return rules, prediction, node_ids
 
 
-# ─── Sidebar Controls ─────────────────────────────────────────────────
+#  Sidebar Controls 
 
 with st.sidebar:
-    st.markdown("## 🌳 Controls")
+    st.markdown("##  Controls")
     st.markdown("---")
 
-    st.markdown("### 📊 Dataset")
+    st.markdown("###  Dataset")
     dataset_name = st.selectbox(
         "Choose Dataset",
         ["Moons", "Circles", "Blobs", "Linear", "XOR"],
@@ -406,7 +406,7 @@ with st.sidebar:
     n_samples = st.slider("Number of Samples", 100, 800, 300, 50)
 
     st.markdown("---")
-    st.markdown("### 🌲 Tree Parameters")
+    st.markdown("###  Tree Parameters")
 
     max_depth = st.slider("Max Depth", 1, 15, 4, 1,
                           help="Maximum depth of the decision tree")
@@ -419,14 +419,14 @@ with st.sidebar:
                          format_func=lambda x: "Gini Impurity" if x == "gini" else "Entropy (Information Gain)")
 
     st.markdown("---")
-    st.markdown("### 🔧 Options")
+    st.markdown("###  Options")
 
     noise_level = st.slider("Noise Level", 0.0, 1.0, 0.0, 0.05,
                             help="Add noise to the dataset")
     show_impurity = st.toggle("Show Impurity Values", value=True)
     random_seed = st.number_input("Random Seed", 0, 999, 42, 1)
 
-# ─── Generate Data & Train Model ──────────────────────────────────────
+#  Generate Data & Train Model 
 
 X, y = generate_dataset(dataset_name, n_samples, noise_level, int(random_seed))
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=int(random_seed))
@@ -443,12 +443,12 @@ clf.fit(X_train, y_train)
 train_acc = accuracy_score(y_train, clf.predict(X_train))
 test_acc = accuracy_score(y_test, clf.predict(X_test))
 
-# ─── Header ───────────────────────────────────────────────────────────
+#  Header 
 
-st.markdown('<h1 class="main-title">🌳 Decision Tree Visualizer</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-title"> Decision Tree Visualizer</h1>', unsafe_allow_html=True)
 st.markdown('<p class="sub-title">Explore how Decision Trees partition data, choose splits, and make predictions interactively.</p>', unsafe_allow_html=True)
 
-# ─── Metrics Row ──────────────────────────────────────────────────────
+#  Metrics Row 
 col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.markdown(f"""
@@ -481,23 +481,23 @@ with col4:
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# ─── Tabs ──────────────────────────────────────────────────────────────
+#  Tabs 
 
 tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
-    "📊 Data & Splits",
-    "📐 Impurity Measures",
-    "🎯 Split Selection",
-    "🌲 Tree Growth",
-    "🔍 Prediction Path",
-    "⚖️ Overfitting & Depth",
-    "🔊 Noise & Pruning"
+    " Data & Splits",
+    " Impurity Measures",
+    " Split Selection",
+    " Tree Growth",
+    " Prediction Path",
+    " Overfitting & Depth",
+    " Noise & Pruning"
 ])
 
-# ═══════════════════════════════════════════════════════════════════════
+# 
 # TAB 1: DATA & SPLITS
-# ═══════════════════════════════════════════════════════════════════════
+# 
 with tab1:
-    st.markdown('<div class="concept-box">📌 <strong>Concept:</strong> Decision Trees recursively split the dataset based on feature values. Each split divides data into subsets, aiming to increase purity in resulting nodes. The input space is partitioned into rectangular decision regions.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="concept-box"> <strong>Concept:</strong> Decision Trees recursively split the dataset based on feature values. Each split divides data into subsets, aiming to increase purity in resulting nodes. The input space is partitioned into rectangular decision regions.</div>', unsafe_allow_html=True)
 
     col_left, col_right = st.columns([1, 1])
 
@@ -559,7 +559,7 @@ with tab1:
 
     # Interactive split line
     st.markdown("---")
-    st.markdown("#### 🔀 Interactive Manual Split")
+    st.markdown("####  Interactive Manual Split")
     st.markdown("Choose a feature and threshold to see how the data is split:")
 
     mcol1, mcol2 = st.columns(2)
@@ -626,14 +626,14 @@ with tab1:
     with mcol_c:
         st.metric("Information Gain", f"{gain:.4f}")
 
-    st.markdown('<div class="observe-box">🔎 <strong>What to observe:</strong> Notice how the Decision Tree creates rectangular regions by splitting parallel to the axes. The more splits, the more complex the boundary. Try different datasets to see how the tree adapts its partitioning strategy.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="observe-box"> <strong>What to observe:</strong> Notice how the Decision Tree creates rectangular regions by splitting parallel to the axes. The more splits, the more complex the boundary. Try different datasets to see how the tree adapts its partitioning strategy.</div>', unsafe_allow_html=True)
 
 
-# ═══════════════════════════════════════════════════════════════════════
+# 
 # TAB 2: IMPURITY MEASURES
-# ═══════════════════════════════════════════════════════════════════════
+# 
 with tab2:
-    st.markdown('<div class="concept-box">📌 <strong>Concept:</strong> Decision Trees choose splits by measuring impurity. <strong>Gini Impurity</strong> = 1 − Σ(pᵢ²) measures the probability of misclassification. <strong>Entropy</strong> = −Σ(pᵢ log₂ pᵢ) measures the amount of disorder or uncertainty.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="concept-box"> <strong>Concept:</strong> Decision Trees choose splits by measuring impurity. <strong>Gini Impurity</strong> = 1 − Σ(pᵢ²) measures the probability of misclassification. <strong>Entropy</strong> = −Σ(pᵢ log₂ pᵢ) measures the amount of disorder or uncertainty.</div>', unsafe_allow_html=True)
 
     # Gini vs Entropy comparison curve
     st.markdown("#### Gini vs Entropy for Binary Classification")
@@ -715,14 +715,14 @@ with tab2:
         plt.tight_layout()
         st.pyplot(fig_bars)
 
-    st.markdown('<div class="observe-box">🔎 <strong>What to observe:</strong> Both Gini and Entropy are maximized at a 50/50 class split and minimized at pure nodes. Entropy has a slightly larger range (0 to 1.0 vs 0 to 0.5). Leaf nodes should have low impurity — that means the tree has found pure regions.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="observe-box"> <strong>What to observe:</strong> Both Gini and Entropy are maximized at a 50/50 class split and minimized at pure nodes. Entropy has a slightly larger range (0 to 1.0 vs 0 to 0.5). Leaf nodes should have low impurity — that means the tree has found pure regions.</div>', unsafe_allow_html=True)
 
 
-# ═══════════════════════════════════════════════════════════════════════
+# 
 # TAB 3: SPLIT SELECTION
-# ═══════════════════════════════════════════════════════════════════════
+# 
 with tab3:
-    st.markdown('<div class="concept-box">📌 <strong>Concept:</strong> At each node, the algorithm evaluates all possible (feature, threshold) pairs and selects the one that maximizes impurity reduction (information gain). This is the core decision-making mechanism of tree construction.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="concept-box"> <strong>Concept:</strong> At each node, the algorithm evaluates all possible (feature, threshold) pairs and selects the one that maximizes impurity reduction (information gain). This is the core decision-making mechanism of tree construction.</div>', unsafe_allow_html=True)
 
     best_feat, best_thresh, best_gain, all_splits = find_best_split(X_train, y_train, criterion)
 
@@ -762,7 +762,7 @@ with tab3:
 
     # Interactive threshold slider
     st.markdown("---")
-    st.markdown("#### 🎛️ Interactive Threshold Explorer")
+    st.markdown("####  Interactive Threshold Explorer")
 
     exp_feature = st.selectbox("Explore Feature", [0, 1],
                                format_func=lambda x: f"Feature {x + 1}",
@@ -796,16 +796,16 @@ with tab3:
     with ecol4:
         delta_color = "normal" if exp_gain >= best_gain * 0.8 else "inverse"
         st.metric("Gain", f"{exp_gain:.4f}",
-                  delta=f"{'✅ Near Best' if exp_gain >= best_gain * 0.8 else '⬇️ Below Best'}")
+                  delta=f"{' Near Best' if exp_gain >= best_gain * 0.8 else ' Below Best'}")
 
-    st.markdown('<div class="observe-box">🔎 <strong>What to observe:</strong> The best split maximizes the information gain. Notice how different thresholds produce very different gains. The algorithm exhaustively checks all candidate splits at each node to find the optimal partition.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="observe-box"> <strong>What to observe:</strong> The best split maximizes the information gain. Notice how different thresholds produce very different gains. The algorithm exhaustively checks all candidate splits at each node to find the optimal partition.</div>', unsafe_allow_html=True)
 
 
-# ═══════════════════════════════════════════════════════════════════════
+# 
 # TAB 4: TREE GROWTH
-# ═══════════════════════════════════════════════════════════════════════
+# 
 with tab4:
-    st.markdown('<div class="concept-box">📌 <strong>Concept:</strong> The model grows recursively from the Root node, creating Internal Nodes with split rules and Leaf Nodes with predictions. The tree represents hierarchical decision rules — each path from root to leaf defines a classification rule.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="concept-box"> <strong>Concept:</strong> The model grows recursively from the Root node, creating Internal Nodes with split rules and Leaf Nodes with predictions. The tree represents hierarchical decision rules — each path from root to leaf defines a classification rule.</div>', unsafe_allow_html=True)
 
     # Step-by-step tree growth
     st.markdown("#### Step-by-Step Tree Growth")
@@ -837,7 +837,7 @@ with tab4:
 
     # Full tree diagram
     st.markdown("---")
-    st.markdown("#### 🌲 Full Tree Structure")
+    st.markdown("####  Full Tree Structure")
 
     try:
         dot_data = build_tree_graphviz(clf)
@@ -852,18 +852,18 @@ edge [fontname="Inter" fontsize=9 color="#9e9e9e" penwidth=1.2]''')
         st.code(export_text(clf, feature_names=["Feature 1", "Feature 2"]))
 
     # Text representation
-    with st.expander("📄 Text Representation of Decision Rules"):
+    with st.expander(" Text Representation of Decision Rules"):
         st.code(export_text(clf, feature_names=["Feature 1", "Feature 2"],
                             max_depth=10, show_weights=True), language=None)
 
-    st.markdown('<div class="observe-box">🔎 <strong>What to observe:</strong> Watch how the boundary complexity increases with depth. At depth 1, only one split exists. Each additional depth level doubles the maximum number of regions. Deeper trees capture more detail but risk overfitting.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="observe-box"> <strong>What to observe:</strong> Watch how the boundary complexity increases with depth. At depth 1, only one split exists. Each additional depth level doubles the maximum number of regions. Deeper trees capture more detail but risk overfitting.</div>', unsafe_allow_html=True)
 
 
-# ═══════════════════════════════════════════════════════════════════════
+# 
 # TAB 5: PREDICTION PATH
-# ═══════════════════════════════════════════════════════════════════════
+# 
 with tab5:
-    st.markdown('<div class="concept-box">📌 <strong>Concept:</strong> To predict, the tree starts at the root, evaluates the split condition at each node, and traverses left or right until reaching a leaf node. The leaf\'s majority class becomes the prediction. This creates an interpretable if-else decision chain.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="concept-box"> <strong>Concept:</strong> To predict, the tree starts at the root, evaluates the split condition at each node, and traverses left or right until reaching a leaf node. The leaf\'s majority class becomes the prediction. This creates an interpretable if-else decision chain.</div>', unsafe_allow_html=True)
 
     st.markdown("#### Select a Point to Trace its Decision Path")
 
@@ -902,14 +902,14 @@ with tab5:
         st.pyplot(fig_pred)
 
     with pred_col2:
-        st.markdown("#### 🛤️ Decision Path")
+        st.markdown("####  Decision Path")
 
         color_map = {True: '#4caf50', False: '#f44336'}
 
         if rules:
             for i, rule in enumerate(rules):
                 went_left = rule['value'] <= rule['threshold']
-                icon = "⬅️" if went_left else "➡️"
+                icon = "" if went_left else ""
                 color = '#4caf50' if went_left else '#ff9800'
                 st.markdown(f"""
                 <div style="padding: 10px 14px; margin: 6px 0; border-radius: 10px;
@@ -925,28 +925,28 @@ with tab5:
         <div style="padding: 14px 18px; margin: 10px 0; border-radius: 12px;
                     background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
                     border: 2px solid #4caf50; text-align: center;">
-            <strong style="font-size: 1.1rem;">🎯 Prediction: Class {prediction}</strong>
+            <strong style="font-size: 1.1rem;"> Prediction: Class {prediction}</strong>
         </div>
         """, unsafe_allow_html=True)
 
     # Rules as code
-    with st.expander("📝 Decision Rules as Code"):
+    with st.expander(" Decision Rules as Code"):
         code_lines = []
         for i, rule in enumerate(rules):
-            indent = "  " * rule['depth']
+            indent = " " * rule['depth']
             direction = "<=" if rule['value'] <= rule['threshold'] else ">"
             code_lines.append(f"{indent}if {rule['feature']} {direction} {rule['threshold']}:")
-        code_lines.append(f"{'  ' * (len(rules))}return Class {prediction}")
+        code_lines.append(f"{' ' * (len(rules))}return Class {prediction}")
         st.code("\n".join(code_lines), language="python")
 
-    st.markdown('<div class="observe-box">🔎 <strong>What to observe:</strong> The prediction path shows exactly which rules are applied. Move the point to different regions and watch how the path changes. This interpretability is a key advantage of Decision Trees over black-box models.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="observe-box"> <strong>What to observe:</strong> The prediction path shows exactly which rules are applied. Move the point to different regions and watch how the path changes. This interpretability is a key advantage of Decision Trees over black-box models.</div>', unsafe_allow_html=True)
 
 
-# ═══════════════════════════════════════════════════════════════════════
+# 
 # TAB 6: OVERFITTING & DEPTH
-# ═══════════════════════════════════════════════════════════════════════
+# 
 with tab6:
-    st.markdown('<div class="concept-box">📌 <strong>Concept:</strong> Tree growth stops based on maximum depth, minimum samples per node, or no impurity improvement. Without these controls, trees can overfit — memorizing training noise instead of learning the true pattern. The gap between train and test accuracy indicates overfitting.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="concept-box"> <strong>Concept:</strong> Tree growth stops based on maximum depth, minimum samples per node, or no impurity improvement. Without these controls, trees can overfit — memorizing training noise instead of learning the true pattern. The gap between train and test accuracy indicates overfitting.</div>', unsafe_allow_html=True)
 
     st.markdown("#### Train vs Test Accuracy Across Depths")
 
@@ -1034,14 +1034,14 @@ with tab6:
     plt.tight_layout()
     st.pyplot(fig_leaves)
 
-    st.markdown('<div class="observe-box">🔎 <strong>What to observe:</strong> Train accuracy always increases with depth, but test accuracy peaks and then declines — this is overfitting. The orange shaded region shows the gap. A shallow tree underfits (both accuracies low), while a very deep tree overfits (high train, low test). The optimal depth balances both.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="observe-box"> <strong>What to observe:</strong> Train accuracy always increases with depth, but test accuracy peaks and then declines — this is overfitting. The orange shaded region shows the gap. A shallow tree underfits (both accuracies low), while a very deep tree overfits (high train, low test). The optimal depth balances both.</div>', unsafe_allow_html=True)
 
 
-# ═══════════════════════════════════════════════════════════════════════
+# 
 # TAB 7: NOISE & PRUNING
-# ═══════════════════════════════════════════════════════════════════════
+# 
 with tab7:
-    st.markdown('<div class="concept-box">📌 <strong>Concept:</strong> Real-world data contains noise and irrelevant features. Without pruning or regularization, trees create overly complex decision boundaries that match the noise. Pruning reduces tree complexity to improve generalization.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="concept-box"> <strong>Concept:</strong> Real-world data contains noise and irrelevant features. Without pruning or regularization, trees create overly complex decision boundaries that match the noise. Pruning reduces tree complexity to improve generalization.</div>', unsafe_allow_html=True)
 
     st.markdown("#### Effect of Noise on Decision Boundaries")
 
@@ -1139,14 +1139,14 @@ with tab7:
     plt.tight_layout()
     st.pyplot(fig_ccp)
 
-    st.markdown('<div class="observe-box">🔎 <strong>What to observe:</strong> Increasing noise makes the decision boundary more jagged and erratic. Pruning simplifies the boundary — some training accuracy is sacrificed, but test accuracy often improves. The CCP path shows the trade-off: as alpha increases, the tree shrinks and eventually underfits.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="observe-box"> <strong>What to observe:</strong> Increasing noise makes the decision boundary more jagged and erratic. Pruning simplifies the boundary — some training accuracy is sacrificed, but test accuracy often improves. The CCP path shows the trade-off: as alpha increases, the tree shrinks and eventually underfits.</div>', unsafe_allow_html=True)
 
 
-# ─── Footer ────────────────────────────────────────────────────────────
+#  Footer 
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; padding: 20px; color: #9e9e9e; font-size: 0.85rem;">
-    🌳 <strong>Decision Tree Interactive Visualizer</strong> · Built with Streamlit & Scikit-learn<br>
+     <strong>Decision Tree Interactive Visualizer</strong> · Built with Streamlit & Scikit-learn<br>
     Explore how trees partition data, choose splits, and make predictions.
 </div>
 """, unsafe_allow_html=True)
